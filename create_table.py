@@ -17,25 +17,13 @@ def create_db_connection(host_name, user_name, user_password, db_name):
     return connect
 connection = create_db_connection("localhost", "root", "19982804", "testbase")
 
+
 def database(connection, query):
     cursor = connection.cursor()
     try:
         cursor.execute(query)
-        print("Database created successfully")
-    except Exception as err:
-        print(f"Error: '{err}'")
-try:
-    create_database_query = "CREATE DATABASE testbase"
-    database(connection, create_database_query)
-except Exception as err:
-    print(f"Error: '{err}'")
-
-def execute_query(connection, query):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query)
         connection.commit()
-        print("Query successful")
+        print("Query successfully")
     except Exception as err:
         print(f"Error: '{err}'")
 
@@ -61,7 +49,12 @@ CREATE TABLE car (
     PRIMARY KEY (car_id)
     );
     """
+create_database_query = "CREATE DATABASE testbase"
+try:
+    database(connection=connection, query=create_database_query)
+    database(connection=connection, query=create_users_table)
+    database(connection=connection, query=create_car_table)
+except Exception as err:
+    print(f"Error: '{err}'")
 
-connection = create_db_connection("localhost", "root", "19982804", "testbase")
-execute_query(connection, create_users_table)
-execute_query(connection, create_car_table)
+

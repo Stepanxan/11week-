@@ -1,6 +1,6 @@
 from models.addcar import Car
-from models.models import Users
-from create_table import create_db_connection
+from models.Users import Users
+from create_table import *
 import json
 
 class Controller():
@@ -10,10 +10,11 @@ class Controller():
         while True:
             print("1. Add New Users\n"
                   + "2. Get All Users\n"
-                  + "3. Search\n"
-                  + "4. Update User By Id\n"
-                  + "5. Add CAR\n"
-                  + "6. Conection database"
+                  + "3. Get All Car\n"
+                  + "4. Search\n"
+                  + "5. Update User By Id\n"
+                  + "6. Add CAR\n"
+                  + "7. Conection database"
                   )
             choose = int(input("Type your choose: "))
             self.controller(menu_flag=choose)
@@ -22,22 +23,23 @@ class Controller():
         if menu_flag == 1:
             self.user_add()
         if menu_flag == 2:
-            self.get_all()
+            self.get_all_users()
         if menu_flag == 3:
+            self.get_all_car()
+        if menu_flag == 4:
             what_to_search = input('By Which Parametr you want to search: ')
             search_str = input('Search: ')
             self.search_by(search_str, what_to_search)
-        if menu_flag == 4:
-            self.update_user()
         if menu_flag == 5:
-            self.add_car()
+            self.update_user()
         if menu_flag == 6:
+            self.add_car()
+        if menu_flag == 7:
             host_name = input('Enter host: ')
             user_name = input('Enter user name: ')
             user_password = input('Enter password: ')
             db_name = input('Enter database name: ')
             create_db_connection(host_name, user_name, user_password, db_name)
-
 
 
     @classmethod
@@ -50,11 +52,16 @@ class Controller():
         users = Users(email, password, first_name, last_name, address)
         users.save()
 
+
     @classmethod
-    def get_all(cls):
-        global data
-        data = cls.get_file_data(cls.file)
-        return data
+    def get_all_users(cls):
+        response = Users.getdata()
+        print(response)
+
+    @classmethod
+    def get_all_car(cls):
+        response = Car.getdata()
+        print(response)
 
     @classmethod
     def search_by(search_str, what_to_search):
@@ -94,17 +101,4 @@ class Controller():
         car = Car(models, number, speed, user, graduation)
         car.save()
 
-    @staticmethod
-    def get_file_data(file_name):
-        file = open("database/" + file_name, 'r')
-        data = json.loads(file.read())
-        file.close()
-        return data
 
-    #
-    # @staticmethod
-    # def save_to_file(self, data):
-    #     data = json.dumps(data)
-    #     file = open('database/' + self.file, "w")
-    #     file.write(data)
-    #     file.close()
